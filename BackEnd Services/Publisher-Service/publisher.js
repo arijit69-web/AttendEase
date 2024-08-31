@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const amqp = require('amqplib/callback_api');
-const cors = require('cors'); 
+const cors = require('cors');
 
 const app = express();
 const port = 3001;
@@ -10,10 +10,10 @@ const amqpUrl = 'amqp://localhost';
 const queueName = 'attendease-queue';
 
 app.use(bodyParser.json());
-app.use(cors()); 
+app.use(cors());
 
 function publishData(channel, queueName, data) {
-    const message = `Brand: ${data.brand}, Model: ${data.model}, OS Name: ${data.osName}, OS Version: ${data.osVersion}, Manufacturer: ${data.manufacturer}, Latitude: ${data.latitude}, Longitude: ${data.longitude}`;
+    const message = `{"userid": ${data.userid},"brand": "${data.brand}", "model": "${data.model}", "osName": "${data.osName}", "osVersion": "${data.osVersion}", "manufacturer": "${data.manufacturer}", "latitude": "${data.latitude}", "longitude": "${data.longitude}"}`;
     channel.sendToQueue(queueName, Buffer.from(message));
     console.log("Sent message:", message);
 }
