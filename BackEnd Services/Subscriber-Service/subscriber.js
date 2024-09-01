@@ -2,17 +2,18 @@ const express = require('express');
 const amqp = require('amqplib/callback_api');
 const cors = require('cors');
 const { MongoClient } = require('mongodb');
-const geolib = require('geolib'); 
+const geolib = require('geolib');
+require('dotenv').config();
 
 const app = express();
 const port = 3000;
 
-const rabbitMqUrl = 'amqp://localhost'; 
-const mongoUri = 'mongodb+srv://admin:Admin9876@cluster0.r5vq2.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const rabbitMqUrl = process.env.AMQP_URL;
+const mongoUri = process.env.MONGO_URI;
 const dbName = 'AttendEase';
 const attendanceCollectionName = 'attendanceDetails';
 const officeCollectionName = 'officeDetails';
-const userDetailsCollectionName = 'userDetails'; 
+const userDetailsCollectionName = 'userDetails';
 
 app.use(cors());
 
@@ -38,7 +39,7 @@ async function isWithinRange(userLocation) {
             const distance = geolib.getDistance(userLocation, officeLocation);
 
             if (distance <= 200) {
-                nearestOffice = office; 
+                nearestOffice = office;
                 break;
             }
         }
@@ -98,9 +99,9 @@ async function insertDataToMongo(data, officeDetails) {
         const currentDate = new Date();
         const formattedData = {
             ...data,
-            date: currentDate.toISOString().split('T')[0], 
-            time: currentDate.toTimeString().split(' ')[0], 
-            officeDetails 
+            date: currentDate.toISOString().split('T')[0],
+            time: currentDate.toTimeString().split(' ')[0],
+            officeDetails
         };
 
         const result = await collection.insertOne(formattedData);

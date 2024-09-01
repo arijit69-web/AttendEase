@@ -2,12 +2,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const amqp = require('amqplib/callback_api');
 const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
 const port = 3001;
 
-const amqpUrl = 'amqp://localhost';
+const amqpUrl = process.env.RABBITMQ_URL;
 const queueName = 'attendease-queue';
+console.log(amqpUrl)
 
 app.use(bodyParser.json());
 app.use(cors());
